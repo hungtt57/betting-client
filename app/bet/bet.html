@@ -1,0 +1,183 @@
+<section id="betpage">
+    <header>
+        <ul class="menutop">
+            <li><a href="#!/bet/1" class="active">Dự đoán</a></li>
+            <li><a href="#!/lich-su-du-doan">Lịch sử dự đoán</a></li>
+            <li><a href="#!/top100">Top 100</a></li>
+        </ul>
+    </header>
+
+    <div class="bxmatch">
+        <div class="bxteam">
+            <div class="imgteam"><img src="{{match[0].team_a.image}}" alt=""/></div>
+            <div class="vs">VS</div>
+            <div class="imgteam"><img src="{{match[0].team_b.image}}" alt=""/></div>
+        </div>
+        <div class="datematch">{{match.time}}</div>
+    </div>
+    <div id="bet-result">
+        <table class="listmatch">
+            <thead>
+            <tr>
+                <td colspan="2">Dự đoán kết quả</td>
+                <td class="help"><a href="#rule-result"><img src="/assets/images/help.png" alt=""/></a></td>
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr ng-repeat="(id ,match_round) in match">
+                <td class="team">
+                    <div ng-click="popup_bet(match_round.team_a, match_round,match_round.rate_a)"><span
+                            class="nameteam">{{match_round.team_a.name}} thắng</span><br>
+                        <span class="point">{{match_round.rate_a}}</span></div>
+                </td>
+                <td class="control"><p>Trận {{match_round.round}}</p>
+                    <p class="status"> {{match_round.win_lose.status}} </p></td>
+                <td class="team">
+                    <div ng-click="popup_bet(match_round.team_b, match_round,match_round.rate_b)"><span
+                            class="nameteam">{{match_round.team_b.name}} thắng</span><br>
+                        <span class="point">{{match_round.rate_b}}</span></div>
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <div id="bet-score">
+        <table class="listmatch">
+            <thead>
+            <tr>
+                <td colspan="2">Dự đoán tài xỉu</td>
+                <td class="help">
+                    <a href="#rule-score"><img src="/assets/images/help.png" alt=""/></a>
+                </td>
+            </tr>
+            </thead>
+            <tbody>
+
+
+            <tr ng-repeat="(id ,match_round) in match">
+                <td class="team">
+                    <div ng-click="popup_score('under',match_round.round,match_round.rate_under,match_round.over_under_number,match_round)">
+                        <span class="nameteam">Tổng DHG < {{match_round.over_under_number}} </span><br>
+                        <span class="point">{{match_round.rate_under}}</span></div>
+                </td>
+                <td class="control"><p>Trận {{match_round.round}}</p>
+                    <p class="status"> {{match_round.under_over.status}} </p></td>
+                <td class="team">
+                    <div ng-click="popup_score('over',match_round.round,match_round.rate_over,match_round.over_under_number,match_round)">
+                        <span class="nameteam">Tổng DHG  ≥ {{match_round.over_under_number}} </span><br>
+                        <span class="point">{{match_round.rate_over}}</span></div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+<!-- popup dự đoán tỉ số-->
+<script type="text/ng-template" id="myModalContent.html">
+    <div class="modal-header">
+        <h1 class="title">Dự đoán tỉ số</h1>
+    </div>
+    <div class="modal-body" id="modal-body">
+        <div class="cont-modal info-match">
+            <div class="info-team-time">{{popup_bet_match_round.team_a.name}} vs {{popup_bet_match_round.team_b.name}}
+                {{match.time}}
+            </div>
+            <div class="team-selected">Trận {{popup_bet_match_round.round}} <span>{{popup_bet_team.name}} thắng - {{popup_bet_rate}}</span>
+            </div>
+            <div class="gold-current">
+                <p>Vàng hiện có</p>
+                <p class="gold">{{account_gold}} <span class="i-gold"><img src="/assets/images/rp.png"
+                                                                           alt=""/></span></p>
+            </div>
+            <div class="gold-bet">
+                <p>Số vàng đặt</p>
+                <input type="text" ng-change="change_bet_gold()" ng-model="popup_bet_bet_gold"
+                       placeholder="Nhập số vàng cần đặt">
+            </div>
+            <div class="gold-win">Có thể nhận được <p class="gold">{{popup_bet_receive_gold | number:0}}<span
+                    class="i-gold"><img src="/assets/images/rp.png" alt=""/></span></p></div>
+            <div class="bxbt">
+                <button class="remodal-confirm" ng-click="ok()">Đồng ý</button>
+            </div>
+        </div>
+    </div>
+</script>
+
+
+<script type="text/ng-template" id="PopupScoreModal.html">
+
+    <div class="modal-header">
+        <h1 class="title">Dự đoán tài xỉu</h1>
+    </div>
+    <div class="modal-body" id="modal-body">
+        <div class="cont-modal info-match">
+            <div class="info-team-time"> {{popup_score_match_round.team_a.name}} vs {{popup_score_match_round.team_b.name}} {{match.time}}</div>
+            <div class="team-selected">Trận
+                {{popup_score_round}}<span>: {{popup_score_detail}} - {{popup_score_rate}}</span></div>
+            <div class="gold-current">
+                <p>Vàng hiện có</p>
+                <p class="gold">{{account_gold}} <span class="i-gold"><img src="/assets/images/rp.png" alt=""/></span>
+                </p>
+            </div>
+            <div class="gold-bet">
+                <p>Số vàng đặt</p>
+                <input type="text" ng-change="change_score_gold()" ng-model="popup_score_bet_gold"
+                       placeholder="Nhập số vàng cần đặt">
+            </div>
+            <div class="gold-win">Có thể nhận được <p class="gold">{{popup_score_receive_gold | number:0}} <span
+                    class="i-gold"><img src="/assets/images/rp.png"
+                                        alt=""/></span></p>
+            </div>
+            <div class="bxbt"><button class="remodal-confirm" ng-click="popup_score_ok()">Đồng ý</button>
+            </div>
+        </div>
+    </div>
+</script>
+
+
+<!-- popup hướng dẫn dự đoán tỉ số-->
+<div class="remodal" data-remodal-id="rule-result">
+    <h1 class="title">Hướng dẫn dự đoán tỉ số</h1>
+    <div class="cont-modal">
+        K.B. Tindal of HipHopDX called the album Ja's best since Rule 3:36 and Pain Is Love, giving high praise to the
+        variety of sexual lyrics and street tracks that Ja is able to deliver again with grit and determination,
+        concluding that, "The Inc. will always be Murder Inc. no matter what and Ja will always be at the head of the
+        fam so get used to it, he's back."[6] Steve 'Flash' Juon of RapReviews said that despite being overwhelmed with
+        guest artists and needless skits, he praised the album for allowing Ja to deliver both pop-rap fluff and thug
+        bravado tracks throughout the runtime, concluding that "This is not an overwhelming strong album lyrically, but
+        it's a pleasant enough one to listen to musically - and from Ja Rule that's enough to get by."[7]<br>
+
+        Timothy Gunatilaka of Entertainment Weekly found love ballads like "Passion" and "Wonderful" much better for
+        Ja's career than his return to spitting thug tracks, concluding that they "suggest he might want to stick to
+        raspy romanticism."[5] Jason Birchmeier of AllMusic said that the album continues the depletion of Ja's
+        relevance in hip-hop set by Blood in My Eye, criticizing the filler material for being downbeat and Ja for
+        gangsta posturing over pop-rap songs that feel cynical and deliberate, concluding with, "And so the downfall
+        goes — tragic, indeed, or not, depending on how affecting you find the pathos at work."
+    </div>
+    <!--<div class="bxbt"> <a class="remodal-cancel" href="#">Cancel</a>
+     <a class="remodal-confirm" href="#">OK</a>
+     </div>-->
+</div>
+<!-- popup hướng dẫn dự đoán tài xỉu-->
+<div class="remodal" data-remodal-id="rule-score">
+    <h1 class="title">Hướng dẫn dự đoán tài xỉu</h1>
+    <div class="cont-modal">
+        K.B. Tindal of HipHopDX called the album Ja's best since Rule 3:36 and Pain Is Love, giving high praise to the
+        variety of sexual lyrics and street tracks that Ja is able to deliver again with grit and determination,
+        concluding that, "The Inc. will always be Murder Inc. no matter what and Ja will always be at the head of the
+        fam so get used to it, he's back."[6] Steve 'Flash' Juon of RapReviews said that despite being overwhelmed with
+        guest artists and needless skits, he praised the album for allowing Ja to deliver both pop-rap fluff and thug
+        bravado tracks throughout the runtime, concluding that "This is not an overwhelming strong album lyrically, but
+        it's a pleasant enough one to listen to musically - and from Ja Rule that's enough to get by."[7]<br>
+
+        Timothy Gunatilaka of Entertainment Weekly found love ballads like "Passion" and "Wonderful" much better for
+        Ja's career than his return to spitting thug tracks, concluding that they "suggest he might want to stick to
+        raspy romanticism."[5] Jason Birchmeier of AllMusic said that the album continues the depletion of Ja's
+        relevance in hip-hop set by Blood in My Eye, criticizing the filler material for being downbeat and Ja for
+        gangsta posturing over pop-rap songs that feel cynical and deliberate, concluding with, "And so the downfall
+        goes — tragic, indeed, or not, depending on how affecting you find the pathos at work."
+    </div>
+</div>
